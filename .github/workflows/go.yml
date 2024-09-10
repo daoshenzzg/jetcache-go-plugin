@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        go: [1.18.x, 1.19.x, 1.20.x, 1.21.x]
+        go: [1.20.x, 1.21.x, 1.22.x]
     name: build & test
     runs-on: ubuntu-latest
     steps:
@@ -28,8 +28,8 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Run coverage
-        run: make test-coverage
+      - name: Run tests
+        run: go test -coverprofile=coverage.txt
 
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
