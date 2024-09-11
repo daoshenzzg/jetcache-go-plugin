@@ -11,7 +11,7 @@ import (
 )
 
 func TestGoRedisV9Adaptor_MGet(t *testing.T) {
-	client := NewGoRedisV8Adaptor(newRdb())
+	client := NewGoRedisV8Adapter(newRdb())
 
 	if err := client.SetEX(context.Background(), "key1", "value1", time.Minute); err != nil {
 		t.Fatal(err)
@@ -29,7 +29,7 @@ func TestGoRedisV9Adaptor_MGet(t *testing.T) {
 }
 
 func TestGoRedisV8Adaptor_MSet(t *testing.T) {
-	client := NewGoRedisV8Adaptor(newRdb())
+	client := NewGoRedisV8Adapter(newRdb())
 
 	err := client.MSet(context.Background(), map[string]any{"key1": "value1", "key2": 2}, time.Minute)
 	assert.Nil(t, err)
@@ -48,7 +48,8 @@ func TestGoRedisV8Adaptor_MSet(t *testing.T) {
 }
 
 func TestGoRedisV8Adaptor_Del(t *testing.T) {
-	client := NewGoRedisV8Adaptor(newRdb())
+	client := NewGoRedisV8Adapter(newRdb())
+
 	err := client.SetEX(context.Background(), "key1", "value1", time.Minute)
 	assert.Nil(t, err)
 	val, err := client.Get(context.Background(), "key1")
@@ -62,7 +63,8 @@ func TestGoRedisV8Adaptor_Del(t *testing.T) {
 }
 
 func TestGoRedisV8Adaptor_SetXxNx(t *testing.T) {
-	client := NewGoRedisV8Adaptor(newRdb())
+	client := NewGoRedisV8Adapter(newRdb())
+
 	_, err := client.SetXX(context.Background(), "key1", "value1", time.Minute)
 	assert.Nil(t, err)
 	_, err = client.Get(context.Background(), "key1")
