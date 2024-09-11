@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGoRedisV8Adaptor_MGet(t *testing.T) {
+func TestGoRedisV9Adaptor_MGet(t *testing.T) {
 	client := NewGoRedisV8Adaptor(newRdb())
 
 	if err := client.SetEX(context.Background(), "key1", "value1", time.Minute); err != nil {
@@ -45,6 +45,31 @@ func TestGoRedisV8Adaptor_MSet(t *testing.T) {
 	result, err := client.MGet(context.Background(), "key1", "key2")
 	assert.Nil(t, err)
 	assert.Equal(t, map[string]any{"key1": "value1", "key2": "2"}, result)
+}
+
+func TestGoRedisV8Adaptor_Del(t *testing.T) {
+	client := NewGoRedisV8Adaptor(newRdb())
+	err := client.SetEX(context.Background(), "key1", "value1", time.Minute)
+	assert.Nil(t, err)
+	value, err := client.Get(context.Background(), "key1")
+	assert.Nil(t, err)
+	assert.Equal(t, "value1", value)
+}
+
+func TestGoRedisV8Adaptor_SetXxNx(t *testing.T) {
+	client := NewGoRedisV8Adaptor(newRdb())
+	_, err := client.SetXX(context.Background(), "key1", "value1", time.Minute)
+	assert.Nil(t, err)
+	_, err = client.Get(context.Background(), "key1")
+	assert.NotNil(t, err)
+	assert.Equal(t, err, client.Nil())
+
+	_, err = client.SetNX(context.Background(), "key1", "value1", time.Minute)
+	assert.Nil(t, err)
+	value, err := client.Get(context.Background(), "key1")
+	assert.Nil(t, err)
+	assert.Equal(t, "value1", value)
+
 }
 
 func newRdb() *redis.Client {
