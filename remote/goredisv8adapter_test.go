@@ -51,9 +51,14 @@ func TestGoRedisV8Adaptor_Del(t *testing.T) {
 	client := NewGoRedisV8Adaptor(newRdb())
 	err := client.SetEX(context.Background(), "key1", "value1", time.Minute)
 	assert.Nil(t, err)
-	value, err := client.Get(context.Background(), "key1")
+	val, err := client.Get(context.Background(), "key1")
 	assert.Nil(t, err)
-	assert.Equal(t, "value1", value)
+	assert.Equal(t, "value1", val)
+	_, err = client.Del(context.Background(), "key1")
+	assert.Nil(t, err)
+	_, err = client.Get(context.Background(), "key1")
+	assert.NotNil(t, err)
+	assert.Equal(t, err, client.Nil())
 }
 
 func TestGoRedisV8Adaptor_SetXxNx(t *testing.T) {
@@ -66,9 +71,9 @@ func TestGoRedisV8Adaptor_SetXxNx(t *testing.T) {
 
 	_, err = client.SetNX(context.Background(), "key1", "value1", time.Minute)
 	assert.Nil(t, err)
-	value, err := client.Get(context.Background(), "key1")
+	val, err := client.Get(context.Background(), "key1")
 	assert.Nil(t, err)
-	assert.Equal(t, "value1", value)
+	assert.Equal(t, "value1", val)
 
 }
 
